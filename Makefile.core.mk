@@ -111,7 +111,7 @@ lint: lint-copyright-banner format-go lint-go tidy-go lint-scripts gen-extension
 
 test_release:
 ifeq "$(shell uname -m)" "x86_64"
-	export BAZEL_BUILD_ARGS="$(BAZEL_BUILD_ARGS)" && ./scripts/release-binary.sh
+	export BAZEL_BUILD_ARGS="$(BAZEL_BUILD_ARGS)" && ./scripts/release-binary.sh -i
 else
 	# Only x86 has support for legacy GLIBC, otherwise pass -i to skip the check
 	export BAZEL_BUILD_ARGS="$(BAZEL_BUILD_ARGS)" && ./scripts/release-binary.sh -i
