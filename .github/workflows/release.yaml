@@ -1,0 +1,32 @@
+name: release
+
+on:
+  push:
+   branches:
+    - 'pintail-*'
+
+  workflow_dispatch: {}
+
+jobs:
+  build-arm:
+    runs-on: ubuntu-24.04-arm
+    steps:
+    - uses: bazel-contrib/setup-bazel@0.14.0
+      with:
+        bazelisk-cache: true
+        disk-cache: ${{ github.workflow }}
+        repository-cache: true
+
+    - uses: actions/checkout@v4
+    - run: make test_release
+
+  build-amd:
+    runs-on: ubuntu-24.04
+    steps:
+    - uses: bazel-contrib/setup-bazel@0.14.0
+      with:
+        bazelisk-cache: true
+        disk-cache: ${{ github.workflow }}
+        repository-cache: true
+    - uses: actions/checkout@v4
+    - run: make test_release
