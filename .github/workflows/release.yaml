@@ -19,6 +19,8 @@ jobs:
 
     - uses: actions/checkout@v4
     - run: make test_release
+      env:
+        BUILD_WITH_CONTAINER: 1
 
   build-amd:
     runs-on: ubuntu-24.04
@@ -30,3 +32,5 @@ jobs:
         repository-cache: true
     - uses: actions/checkout@v4
     - run: make test_release
+      env:
+        BUILD_WITH_CONTAINER: 1
