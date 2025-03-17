@@ -7,30 +7,41 @@ on:
 
   workflow_dispatch: {}
 
+env:
+  BUILD_WITH_CONTAINER: 1
+  CONDITIONAL_HOST_MOUNTS: >-
+    --mount type=bind,source=/home/runner/.bazelrc,destination=/home/.bazelrc
+    --mount type=bind,source=/home/runner/.bazel,destination=/home/.bazel
+
 jobs:
   build-arm:
-    runs-on: ubuntu-24.04-arm
+    runs-on: namespace-profile-arm64 # ubuntu-24.04-arm
     steps:
     - uses: bazel-contrib/setup-bazel@0.14.0
       with:
         bazelisk-cache: true
-        disk-cache: ${{ github.workflow }}
         repository-cache: true
+        external-cache: true
+        disk-cache: ${{ github.workflow }}-arm
+        bazelrc: |
+          build --show_timestamps
 
     - uses: actions/checkout@v4
+    - run: mkdir -p /home/runner/.bazel
     - run: make test_release
-      env:
-        BUILD_WITH_CONTAINER: 1
 
   build-amd:
-    runs-on: ubuntu-24.04
+    runs-on: namespace-profile-amd64 # ubuntu-24.04
     steps:
     - uses: bazel-contrib/setup-bazel@0.14.0
       with:
         bazelisk-cache: true
-        disk-cache: ${{ github.workflow }}
         repository-cache: true
+        external-cache: true
+        disk-cache: ${{ github.workflow }}
+        bazelrc: |
+          build --show_timestamps
+
     - uses: actions/checkout@v4
+    - run: mkdir -p /home/runner/.bazel
     - run: make test_release
-      env:
-        BUILD_WITH_CONTAINER: 1
